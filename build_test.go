@@ -3,6 +3,7 @@ package buildpkg
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
 
 	qt "github.com/frankban/quicktest"
@@ -14,20 +15,23 @@ func TestBuild(t *testing.T) {
 	}
 	c := qt.New(t)
 
+	wd, err := os.Getwd()
+	c.Assert(err, qt.IsNil)
+	testData := filepath.Join(wd, "testdata")
 	opts := Options{
 		Infof: func(format string, args ...interface{}) {
 			log.Printf(format, args...)
 		},
-		Dir:                  "./testdata",
-		SigningIdentity:      "ZYSJUFSYL4",
-		StagingDirectory:     "./staging",
-		Identifier:           "is.bep.helloworld",
-		Version:              "0.0.13",
-		InstallLocation:      "/usr/local/bin",
-		PackageOutputPath:    "./helloworld.pkg",
-		SkipCodeSigning:      false,
-		SkipNotarization:     false,
-		SkipInstallerSigning: false,
+		Dir:                   testData,
+		SigningIdentity:       "ZYSJUFSYL4",
+		StagingDirectory:      filepath.Join(testData, "staging"),
+		Identifier:            "is.bep.helloworld",
+		Version:               "0.0.13",
+		InstallLocation:       "/usr/local/bin",
+		PackageOutputFilename: filepath.Join(testData, "helloworld.pkg"),
+		SkipCodeSigning:       false,
+		SkipNotarization:      false,
+		SkipInstallerSigning:  false,
 		//ScriptsDirectory: "./testdata/scripts",
 	}
 

@@ -45,7 +45,7 @@ func (b *Builder) Build() error {
 		}
 	}
 
-	tempPackageOutputPath := b.PackageOutputPath + ".tmp"
+	tempPackageOutputFilename := b.PackageOutputFilename + ".tmp"
 
 	args := []string{
 		"--root", b.StagingDirectory,
@@ -59,10 +59,10 @@ func (b *Builder) Build() error {
 	}
 
 	if b.SkipInstallerSigning {
-		tempPackageOutputPath = b.PackageOutputPath
+		tempPackageOutputFilename = b.PackageOutputFilename
 	}
 
-	args = append(args, tempPackageOutputPath)
+	args = append(args, tempPackageOutputFilename)
 
 	if err := b.runCommand("pkgbuild", args...); err != nil {
 		return err
@@ -70,28 +70,28 @@ func (b *Builder) Build() error {
 
 	if !b.SkipInstallerSigning {
 		// Sign the package
-		if err := b.runCommand("productsign", "--sign", b.SigningIdentity, tempPackageOutputPath, b.PackageOutputPath); err != nil {
+		if err := b.runCommand("productsign", "--sign", b.SigningIdentity, tempPackageOutputFilename, b.PackageOutputFilename); err != nil {
 			return err
 		}
 
-		if err := os.Remove(filepath.Join(b.Dir, tempPackageOutputPath)); err != nil {
+		if err := os.Remove(tempPackageOutputFilename); err != nil {
 			return err
 		}
 
 		// Check the package signature.
-		if err := b.runCommand("pkgutil", "--check-signature", b.PackageOutputPath); err != nil {
+		if err := b.runCommand("pkgutil", "--check-signature", b.PackageOutputFilename); err != nil {
 			return err
 		}
 	}
 
 	if !b.SkipNotarization {
 		// Notarize the package.
-		if err := b.notarizePackage(filepath.Join("testdata", b.PackageOutputPath)); err != nil {
+		if err := b.notarizePackage(filepath.Join(b.PackageOutputFilename)); err != nil {
 			return err
 		}
 
 		// Staple the package.
-		if err := b.runCommand("stapler", "staple", b.PackageOutputPath); err != nil {
+		if err := b.runCommand("stapler", "staple", b.PackageOutputFilename); err != nil {
 			return err
 		}
 	}
@@ -154,7 +154,7 @@ type Options struct {
 	SigningIdentity string
 
 	// The result
-	PackageOutputPath string
+	PackageOutputFilename string
 
 	// The staging directory where all your build artifacts are located.
 	StagingDirectory string
@@ -203,7 +203,7 @@ func (o *Options) init() error {
 		return fmt.Errorf("opts: InstallLocation not set")
 	}
 
-	if o.PackageOutputPath == "" {
+	if o.PackageOutputFilename == "" {
 		return fmt.Errorf("opts: PackageOutputPath not set")
 	}
 
