@@ -15,3 +15,24 @@ The bulding blocks:
     1. Check the package with `pkgutil`
     1. Notarize the package with [macosnotarylib](https://github.com/bep/macosnotarylib) (uses the Apple API)
     1. Staple the package with `stapler`
+
+For the **codesign** step you need create a `Developer ID Application Certificate` and for the **package signing** step you need a `Developer ID Installer` certificate. These needs to be imported into your Keychain. Follow the instructions at [developer.apple.com](https://developer.apple.com/account/resources/certificates/list).
+
+<img width="1028" alt="image" src="https://user-images.githubusercontent.com/394382/189410218-cab4cbf9-4f82-4f4b-ab0a-f19eb90e9c20.png">
+
+Once you have those imported in the Keychain you can locate their common _signing identifier_ with `security find-identity -v`, which is `XYZJUFSYL4` in the example below:
+
+```bash
+~/d/g/hugoreleaser ❯❯❯ security find-identity -v
+  1) D4A412805301423E2DF63D90CE37C8A050B3AA2F "Developer ID Application: Bjørn Erik Pedersen (XYZJUFSYL4)"
+  2) D4A412805301423E2DF63D90CE37C8A050B3AA2F "Developer ID Application: Bjørn Erik Pedersen (XYZJUFSYL4)"
+  3) EADAD38B73CADB2E6975F55B8735F17B09138217 "Developer ID Installer: Bjørn Erik Pedersen (XYZJUFSYL4)"
+  4) EADAD38B73CADB2E6975F55B8735F17B09138217 "Developer ID Installer: Bjørn Erik Pedersen (XYZJUFSYL4)"
+     4 valid identities found
+```
+
+For the **notarizer** step you need to [create a new new API access key](https://appstoreconnect.apple.com/access/api) with `Developer` access and download the private key. Take note of the `Issuer ID` and `Key ID`:
+
+<img width="1015" alt="image" src="https://user-images.githubusercontent.com/394382/189410576-923edbca-f428-4f06-919d-70f437da8654.png">
+
+Also See [Creating API Keys for App Store Connect AP](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
