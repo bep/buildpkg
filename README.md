@@ -20,7 +20,7 @@ For the **codesign** step you need create a `Developer ID Application Certificat
 
 <img width="1028" alt="image" src="https://user-images.githubusercontent.com/394382/189410218-cab4cbf9-4f82-4f4b-ab0a-f19eb90e9c20.png">
 
-Once you have those imported in the Keychain you can locate their common _signing identifier_ with `security find-identity -v`, which is `XYZJUFSYL4` in the example below:
+Once you have those imported in the Keychain you can locate their common _signing identity_ with `security find-identity -v`, which is `XYZJUFSYL4` in the example below:
 
 ```bash
 ~/d/g/hugoreleaser ❯❯❯ security find-identity -v
@@ -36,3 +36,51 @@ For the **notarizer** step you need to [create a new new API access key](https:/
 <img width="1025" alt="image" src="https://user-images.githubusercontent.com/394382/189411457-d0ecf2f8-5457-45ad-ae0c-bd48fd48ab5a.png">
 
 Also See [Creating API Keys for App Store Connect AP](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
+
+With the above you could put the _signing identity_ in the `Options` struct and pass it to `New`:
+
+```go
+
+type Options struct {
+	// The Info logger.
+	// If nil, no Info logging will be done.
+	Infof func(format string, a ...interface{})
+
+	// The Dir to build from.
+	Dir string
+
+	// Developer ID Application + Developer ID Installer
+	// https://developer.apple.com/account/resources/certificates/list
+	SigningIdentity string
+
+	// The result
+	PackageOutputFilename string
+
+	// The staging directory where all your build artifacts are located.
+	StagingDirectory string
+
+	// E.g. io.gohugo.hugo
+	Identifier string
+
+	// E.g. 234
+	Version string
+
+	// E.g. /usr/local/bin
+	InstallLocation string
+
+	// Scripts passed on the command line --scripts flag.
+	// E.g. /mypkgscripts
+	ScriptsDirectory string
+
+	// Flags to enable skipping of build steps.
+	SkipCodeSigning      bool
+	SkipInstallerSigning bool
+	SkipNotarization     bool
+}
+```
+
+The other settings currently needs to be set as OS environment variables:
+
+*  `MACOSNOTARYLIB_ISSUER_ID`
+*  `MACOSNOTARYLIB_KID` (Key ID)
+*  `MACOSNOTARYLIB_PRIVATE_KEY` (in base64 format).
