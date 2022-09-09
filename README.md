@@ -2,7 +2,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/bep/buildpkg)](https://goreportcard.com/report/github.com/bep/buildpkg)
 [![GoDoc](https://godoc.org/github.com/bep/buildpkg?status.svg)](https://godoc.org/github.com/bep/buildpkg)
 
-This journey started with my naive idea that I could do all of this outside of Macintosh/MacOS. It started out great when I found Apple's [Notary API](https://developer.apple.com/documentation/notaryapi), so I wrote [macosnotarylib](https://github.com/bep/macosnotarylib). But I would also at least have code and package signing place, and this was where I had to give up the grand. There are some third party libraries that claim to do some of this, but for me, even getting passed the trust part where I would have to inspect the code, would be too much work.
+This journey started with my naive idea that I could do all of this outside of Macintosh/MacOS. It started out great when I found Apple's [Notary API](https://developer.apple.com/documentation/notaryapi), so I wrote [macosnotarylib](https://github.com/bep/macosnotarylib). But I also needed binary and package signing, and I gave up the grand idea. There are some third party libraries that claim to do some of this, but for me, even getting passed the trust part where I would have to inspect the code, would be too much work.
 
 So, I wrote some tooling for this myself that uses Apple's CLI tools and API, and this library is the core part of it. There are Go alternatives out there, most notably [gon](https://github.com/mitchellh/gon). The biggest difference is that `gon` produces DMG or ZIP files. This library produces the very end-user-friendly PKG format.
 
