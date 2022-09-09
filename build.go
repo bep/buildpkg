@@ -165,7 +165,7 @@ type Options struct {
 	// E.g. 234
 	Version string
 
-	// E.g. /Applications
+	// E.g. /usr/local/bin
 	InstallLocation string
 
 	// Scripts passed on the command line --scripts flag.
