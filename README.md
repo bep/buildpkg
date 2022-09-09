@@ -33,6 +33,6 @@ Once you have those imported in the Keychain you can locate their common _signin
 
 For the **notarizer** step you need to [create a new new API access key](https://appstoreconnect.apple.com/access/api) with `Developer` access and download the private key. Take note of the `Issuer ID` and `Key ID`:
 
-<img width="1015" alt="image" src="https://user-images.githubusercontent.com/394382/189410576-923edbca-f428-4f06-919d-70f437da8654.png">
+<img width="1025" alt="image" src="https://user-images.githubusercontent.com/394382/189411457-d0ecf2f8-5457-45ad-ae0c-bd48fd48ab5a.png">
 
 Also See [Creating API Keys for App Store Connect AP](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
