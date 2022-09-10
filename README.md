@@ -84,3 +84,12 @@ The other settings currently needs to be set as OS environment variables:
 *  `MACOSNOTARYLIB_ISSUER_ID`
 *  `MACOSNOTARYLIB_KID` (Key ID)
 *  `MACOSNOTARYLIB_PRIVATE_KEY` (in base64 format).
+
+## Use with Hugoreleaser
+
+There are 2 archive plugins available:
+
+* [macospkgremote](https://github.com/gohugoio/hugoreleaser-archive-plugins/tree/main/macospkgremote)
+* [macospkg](https://github.com/gohugoio/hugoreleaser-archive-plugins/tree/main/macospkg] (a "local" variant of the above)
+
+Also see it configured in Hugoreleaser's [build config](https://github.com/gohugoio/hugoreleaser/blob/main/hugoreleaser.toml].
