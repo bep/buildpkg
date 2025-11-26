@@ -16,7 +16,7 @@ The bulding blocks:
     1. Notarize the package with [macosnotarylib](https://github.com/bep/macosnotarylib) (uses the Apple API)
     1. Staple the package with `stapler`
 
-For the **codesign** step you need create a `Developer ID Application Certificate` and for the **package signing** step you need a `Developer ID Installer Certificate`. These needs to be imported into your Keychain. Follow the instructions at [developer.apple.com](https://developer.apple.com/account/resources/certificates/list).
+For the **codesign** step you need create a `Developer ID Application Certificate` and for the **package signing** step you need a `Developer ID Installer Certificate`. These needs to be imported into your Keychain. Follow the instructions at [[developer.apple.com](https://developer.apple.com/account/resources/certificates/list](https://developer.apple.com/help/account/certificates/create-developer-id-certificates/)).
 
 <img width="1028" alt="image" src="https://user-images.githubusercontent.com/394382/189410218-cab4cbf9-4f82-4f4b-ab0a-f19eb90e9c20.png">
 
