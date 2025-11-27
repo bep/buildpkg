@@ -24,6 +24,7 @@ func TestBuild(t *testing.T) {
 		},
 		Dir:                   testData,
 		SigningIdentity:       "ZYSJUFSYL4",
+		SigningEntitlements:   []string{"com.apple.security.cs.allow-jit", "com.apple.security.cs.allow-unsigned-executable-memory"},
 		StagingDirectory:      filepath.Join(testData, "staging"),
 		Identifier:            "is.bep.helloworld",
 		Version:               "0.0.13",
@@ -32,7 +33,6 @@ func TestBuild(t *testing.T) {
 		SkipCodeSigning:       false,
 		SkipNotarization:      false,
 		SkipInstallerSigning:  false,
-		//ScriptsDirectory: "./testdata/scripts",
 	}
 
 	builder, err := New(opts)
@@ -40,5 +40,4 @@ func TestBuild(t *testing.T) {
 	c.Assert(builder.runCommand("./prepare.sh", builder.Version), qt.IsNil)
 	err = builder.Build()
 	c.Assert(err, qt.IsNil)
-
 }

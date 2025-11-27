@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/bep/macosnotarylib"
 	"github.com/golang-jwt/jwt/v4"
@@ -23,7 +24,7 @@ type Builder struct {
 }
 
 // Build signs the binary, builds the package and signs and notarizes and staples it.
-// It' currently limited to 1 file only.
+// It's currently limited to 1 file only.
 // The notarization part requires the following environment variables to be set:
 // - MACOSNOTARYLIB_ISSUER_ID
 // - MACOSNOTARYLIB_KID
@@ -39,7 +40,33 @@ func (b *Builder) Build() error {
 
 	if !b.SkipCodeSigning {
 		for _, fi := range files {
-			if err := b.runCommand("codesign", "-s", b.SigningIdentity, "--options=runtime", filepath.Join(b.StagingDirectory, fi.Name())); err != nil {
+			args := []string{"-s", b.SigningIdentity, "--options=runtime", filepath.Join(b.StagingDirectory, fi.Name())}
+			if len(b.SigningEntitlements) > 0 {
+				entitlementsTempFile, err := os.CreateTemp("", "app*.entitlements")
+				if err != nil {
+					return err
+				}
+				defer func() {
+					entitlementsTempFile.Close()
+					os.Remove(entitlementsTempFile.Name())
+				}()
+
+				var entitlementsContent strings.Builder
+				entitlementsContent.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
+				entitlementsContent.WriteString(`<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">` + "\n")
+				entitlementsContent.WriteString(`<plist version="1.0">` + "\n")
+				entitlementsContent.WriteString(`<dict>` + "\n")
+				for _, e := range b.SigningEntitlements {
+					entitlementsContent.WriteString(fmt.Sprintf("    <key>%s</key><true/>\n", e))
+				}
+				entitlementsContent.WriteString(`</dict>` + "\n")
+				entitlementsContent.WriteString(`</plist>` + "\n")
+				if _, err := entitlementsTempFile.WriteString(entitlementsContent.String()); err != nil {
+					return err
+				}
+				args = append(args, "--entitlements", entitlementsTempFile.Name())
+			}
+			if err := b.runCommand("codesign", args...); err != nil {
 				return err
 			}
 		}
@@ -123,13 +150,11 @@ func (b *Builder) notarizePackage(filename string) error {
 			},
 		},
 	)
-
 	if err != nil {
 		return err
 	}
 
 	return n.Submit(filename)
-
 }
 
 func (b *Builder) runCommand(name string, args ...string) error {
@@ -152,6 +177,11 @@ type Options struct {
 	// Developer ID Application + Developer ID Installer
 	// https://developer.apple.com/account/resources/certificates/list
 	SigningIdentity string
+
+	// Entitlements to use when signing the package.
+	// E.g. []string{"com.apple.security.cs.allow-jit", "com.apple.security.cs.allow-unsigned-executable-memory"}
+	// See https://github.com/wazero/wazero/issues/2393
+	SigningEntitlements []string
 
 	// The result
 	PackageOutputFilename string
