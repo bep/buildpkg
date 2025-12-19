@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/bep/macosnotarylib"
 	"github.com/golang-jwt/jwt/v4"
@@ -138,9 +139,10 @@ func (b *Builder) notarizePackage(filename string) error {
 
 	n, err := macosnotarylib.New(
 		macosnotarylib.Options{
-			InfoLoggerf: b.Infof,
-			IssuerID:    issuerID,
-			Kid:         kid,
+			InfoLoggerf:       b.Infof,
+			IssuerID:          issuerID,
+			Kid:               kid,
+			SubmissionTimeout: 15 * time.Minute,
 			SignFunc: func(token *jwt.Token) (string, error) {
 				key, err := macosnotarylib.LoadPrivateKeyFromEnvBase64("MACOSNOTARYLIB_PRIVATE_KEY")
 				if err != nil {
