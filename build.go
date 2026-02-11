@@ -171,7 +171,7 @@ func (b *Builder) runCommand(name string, args ...string) error {
 type Options struct {
 	// The Info logger.
 	// If nil, no Info logging will be done.
-	Infof func(format string, a ...interface{})
+	Infof func(format string, a ...any)
 
 	// The Dir to build from.
 	Dir string
@@ -212,7 +212,7 @@ type Options struct {
 
 func (o *Options) init() error {
 	if o.Infof == nil {
-		o.Infof = func(format string, a ...interface{}) {
+		o.Infof = func(format string, a ...any) {
 		}
 	}
 	if o.SigningIdentity == "" {
