@@ -19,7 +19,7 @@ func TestBuild(t *testing.T) {
 	c.Assert(err, qt.IsNil)
 	testData := filepath.Join(wd, "testdata")
 	opts := Options{
-		Infof: func(format string, args ...interface{}) {
+		Infof: func(format string, args ...any) {
 			log.Printf(format, args...)
 		},
 		Dir:                   testData,
